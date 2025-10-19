@@ -146,7 +146,7 @@ const SongListItem = ({ song_id, index, deleteHandler } : { song_id: number, ind
                                             {data.title}
                                         </h5>
                                         <p>
-                                            {data.artist}
+                                            {data.artist ? data.artist : 'No Artist'}
                                         </p>
                                     </> }
                                     { !data && <Loader /> }

@@ -137,13 +137,19 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
     const maxItemsPerPage: number = data ? data.maxItemsPerPage : 0;
     const totalPages: number = data ? data.totalPages : 0;
     const processed_data = data && data.songs ? data.songs.map((song: SongProps) => {
-        const date = new Date(song.updatedAt);
-        //const dateString = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-        const dateString = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-        const timeString = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        const updatedDate = new Date(song.updatedAt);
+        const updatedDateString = `${updatedDate.getDate()}/${updatedDate.getMonth() + 1}/${updatedDate.getFullYear()}`;
+        const updatedTimeString = updatedDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+        const createdDate = new Date(song.createdAt);
+        const createdDateString = `${createdDate.getDate()}/${updatedDate.getMonth() + 1}/${updatedDate.getFullYear()}`;
+        const createdDTimeString = createdDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        console.log(`Song created at: ${song.createdAt}`);
+        
         return {
             ...song,
-            updatedAt: `${dateString}, ${timeString}`
+            createdAt: `${createdDateString}, ${createdDTimeString}`,
+            updatedAt: `${updatedDateString}, ${updatedTimeString}`
         }
     }) : [];
     //console.log(error);
@@ -230,10 +236,6 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                         )
                     }}
                 >
-                    <Table.Column align="center" fixed sortable flexGrow={1} >
-                        <Table.HeaderCell>Updated</Table.HeaderCell>
-                        <Table.Cell dataKey="updatedAt" />
-                    </Table.Column>
                     <Table.Column align="center" fixed sortable flexGrow={2} >
                         <Table.HeaderCell>Title</Table.HeaderCell>
                         <Table.Cell dataKey="title" />
@@ -241,6 +243,14 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                     <Table.Column align="center" fixed sortable flexGrow={1} >
                         <Table.HeaderCell>Artist</Table.HeaderCell>
                         <Table.Cell dataKey="artist" />
+                    </Table.Column>
+                    <Table.Column align="center" fixed sortable flexGrow={1} >
+                        <Table.HeaderCell>Created</Table.HeaderCell>
+                        <Table.Cell dataKey="createdAt" />
+                    </Table.Column>
+                    <Table.Column align="center" fixed sortable flexGrow={1} >
+                        <Table.HeaderCell>Updated</Table.HeaderCell>
+                        <Table.Cell dataKey="updatedAt" />
                     </Table.Column>
                     <Table.Column flexGrow={1} >
                         <Table.HeaderCell>Action</Table.HeaderCell>
@@ -259,7 +269,7 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                 </Table>
                 { data &&
                     <Animation.Bounce in >
-                        <Pagination style={{padding: '0.5em', border: '5px double rgba(47,116,169,0.5)', borderRadius: '0.5em'}}                            
+                        <Pagination style={{padding: '0.5em', border: '5px double rgba(47,116,169,0.5)', borderRadius: '0.5em', placeContent: 'center'}}                            
                             prev next size="lg"
                             total={totalPages * maxItemsPerPage} limit={maxItemsPerPage} activePage={pageIndex}
                             onChangePage={(newIndex: number) => {

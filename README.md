@@ -82,10 +82,14 @@ This website is intended for:
 
 ***
 
-## Development
+## Development & Getting Started
 
-* `npm run dev` to run the Next.js server in development.
-
+* Clone the repo
+* `npm install --legacy-peer-deps` to install dependencies
+* `npm run generate` to generate Prisma client
+* `npx prisma migrate dev` to migrate the database
+* `npx prisma db push` to push the database to the cloud
+* `npm run dev` to run the Next.js server in development
 * Make sure to set the environment variable `ADMIN_PASSWORD` in both the local environment (`env.local` file) and also Vercel or whatever hosting provider used.
 
 ***

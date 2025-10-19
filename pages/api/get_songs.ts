@@ -46,6 +46,7 @@ async function get_all_songs({page='', searchText='', sortColumn='', sortType=''
         ...pageConfig,
         select: {
             id: true,
+            createdAt: true,
             updatedAt: true,
             title: true,
             artist: true
