@@ -1,8 +1,6 @@
 .page {
     padding-top: 2vh;
     padding-bottom: 10vh;
-    padding-left: 2vw;
-    padding-right: 2vw;
 }
 
 .video-responsive {
@@ -10,7 +8,7 @@
     padding-bottom: 56.25%;
     position: relative;
 }
-  
+
 .video-responsive iframe {
     left: 0;
     top: 0;
@@ -20,8 +18,11 @@
 }
 
 a:not(.actualAnchor) {
-    color: inherit; /* blue colors for links too */
-    text-decoration: inherit; /* no underline */
+    /* blue colors for links too */
+    color: inherit;
+
+    /* no underline */
+    text-decoration: inherit;
 }
 
 .quill-chord-selected {
@@ -46,9 +47,15 @@ a:not(.actualAnchor) {
 }
 
 .triangle-up {
-	width: 0;
-	height: 0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	border-bottom: 10px solid #9012ff;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 10px solid #9012ff;
+}
+
+.rs-theme-dark {
+    .custom-stack-style {
+        background: var(--rs-gray-800);
+    }
 }

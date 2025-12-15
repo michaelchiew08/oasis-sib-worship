@@ -15,9 +15,6 @@ const ExportSongModal = dynamic(() => import('../../components/ExportSongModal')
 const DeleteSongModal = dynamic(() => import('../../components/DeleteSongModal'), {
     loading: () => <ModalLoader message="Loading song deleter" />
 })
-// import SongModal from '../../components/SongModal'
-// import ExportSongModal from '../../components/ExportSongModal'
-// import DeleteSongModal from '../../components/DeleteSongModal'
 import { SongProps } from '../../lib/types'
 import { domainUrl, copyToClipboard, json_fetcher } from '../../lib/utils'
 import { Plus, Search, More } from '@rsuite/icons'
@@ -28,20 +25,20 @@ import { RiDeleteBin2Fill } from 'react-icons/ri'
 import { GrClose } from 'react-icons/gr'
 
 // eslint-disable-next-line react/display-name
-const renderRowMenu = (row_data: SongProps, handleRowMenuSelect: (eventKey?: string, row_data?: SongProps)=>void) => ({ onClose, className }: {onClose: ()=>void, className: string}, ref: React.RefObject<HTMLDivElement>) => {
+const renderRowMenu = (row_data: SongProps, handleRowMenuSelect: (eventKey?: string, row_data?: SongProps) => void) => ({ onClose, className }: { onClose: () => void, className: string }, ref: React.RefObject<HTMLDivElement>) => {
     const onSelect = (eventKey?: string) => {
         handleRowMenuSelect(eventKey, row_data);
         onClose();
     }
     return (
-      <Popover ref={ref} className={className} full>
-        <Dropdown.Menu onSelect={onSelect} onClick={(e) => e.preventDefault()} >
-          <Dropdown.Item icon={<FiEdit style={{marginRight: '0.4em'}} />} eventKey='edit'>Edit</Dropdown.Item>
-          <Dropdown.Item icon={<AiOutlineLink style={{marginRight: '0.4em'}} />} eventKey='share'>Share</Dropdown.Item>
-          <Dropdown.Item icon={<BiExport style={{marginRight: '0.4em'}} />} eventKey='export'>Export</Dropdown.Item>
-          <Dropdown.Item icon={<RiDeleteBin2Fill style={{marginRight: '0.4em'}} />} eventKey='delete'>Delete</Dropdown.Item>
-        </Dropdown.Menu>
-      </Popover>
+        <Popover ref={ref} className={className} full>
+            <Dropdown.Menu onSelect={onSelect} onClick={(e) => e.preventDefault()} >
+                <Dropdown.Item icon={<FiEdit style={{ marginRight: '0.4em' }} />} eventKey='edit'>Edit</Dropdown.Item>
+                <Dropdown.Item icon={<AiOutlineLink style={{ marginRight: '0.4em' }} />} eventKey='share'>Share</Dropdown.Item>
+                <Dropdown.Item icon={<BiExport style={{ marginRight: '0.4em' }} />} eventKey='export'>Export</Dropdown.Item>
+                <Dropdown.Item icon={<RiDeleteBin2Fill style={{ marginRight: '0.4em' }} />} eventKey='delete'>Delete</Dropdown.Item>
+            </Dropdown.Menu>
+        </Popover>
     );
 };
 
@@ -55,27 +52,27 @@ interface AllSongsProps {
     initialSortType: SortType,
     initialPageIndex: number
 }
-  
 
-const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortColumn, initialSortType, initialPageIndex}) => {
+
+const AllSongsPage: NextPage<AllSongsProps> = ({ initialSearchText, initialSortColumn, initialSortType, initialPageIndex }) => {
     const router = useRouter();
     const [searchText, setSearchText] = useState<string>(initialSearchText);
     const [sortColumn, setSortColumn] = useState<string>(initialSortColumn);
-    const [sortType, setSortType] =useState<SortType>(initialSortType);
+    const [sortType, setSortType] = useState<SortType>(initialSortType);
     const [pageIndex, setPageIndex] = useState<number>(initialPageIndex);
 
     const { data, isValidating, error, mutate } = useSWR(`/api/get_songs?page=${pageIndex}&searchText=${searchText}&sortType=${sortType}&sortColumn=${sortColumn}`
-    , songs_fetcher, {
+        , songs_fetcher, {
         revalidateOnFocus: false,
     });
 
     const [addSongShow, setAddSongShow] = useState<boolean>(false);
     const [editSongShow, setEditSongShow] = useState<boolean>(false);
-    const [editSongId, setEditSongId] = useState<number|undefined>(undefined);
+    const [editSongId, setEditSongId] = useState<number | undefined>(undefined);
     const [exportSongShow, setExportSongShow] = useState<boolean>(false);
-    const [exportSongData, setExportSongData] = useState<SongProps|undefined>(undefined);
+    const [exportSongData, setExportSongData] = useState<SongProps | undefined>(undefined);
     const [deleteSongShow, setDeleteSongShow] = useState<boolean>(false);
-    const [deleteSongData, setDeleteSongData] = useState<SongProps|undefined>(undefined);
+    const [deleteSongData, setDeleteSongData] = useState<SongProps | undefined>(undefined);
 
     const [addSongModalLoad, setAddSongModalLoad] = useState<boolean>(false);
     const [editSongModalLoad, setEditSongModalLoad] = useState<boolean>(false);
@@ -126,10 +123,10 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
         router.replace({
             pathname: router.pathname,
             query: {
-              ...router.query,
-              sortColumn,
-              sortType,
-              pageIndex: 1
+                ...router.query,
+                sortColumn,
+                sortType,
+                pageIndex: 1
             },
         });
     };
@@ -145,7 +142,7 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
         const createdDateString = `${createdDate.getDate()}/${updatedDate.getMonth() + 1}/${updatedDate.getFullYear()}`;
         const createdDTimeString = createdDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
         console.log(`Song created at: ${song.createdAt}`);
-        
+
         return {
             ...song,
             createdAt: `${createdDateString}, ${createdDTimeString}`,
@@ -158,14 +155,12 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
 
     return (
         <>
-            {addSongModalLoad && <SongModal visibility={addSongShow} handleClose={handleAddSongClose} onSuccess={mutate} /> }
-            {editSongModalLoad && <SongModal editSong={true} editSongId={editSongId} visibility={editSongShow} handleClose={handleEditSongClose} onSuccess={mutate} /> }
-            {exportSongModalLoad && <ExportSongModal songData={exportSongData} visibility={exportSongShow} handleClose={handleExportSongClose} /> }
-            {deleteSongModalLoad && <DeleteSongModal songData={deleteSongData} visibility={deleteSongShow} handleClose={handleDeleteSongClose} onSuccess={mutate} /> }
+            {addSongModalLoad && <SongModal visibility={addSongShow} handleClose={handleAddSongClose} onSuccess={mutate} />}
+            {editSongModalLoad && <SongModal editSong={true} editSongId={editSongId} visibility={editSongShow} handleClose={handleEditSongClose} onSuccess={mutate} />}
+            {exportSongModalLoad && <ExportSongModal songData={exportSongData} visibility={exportSongShow} handleClose={handleExportSongClose} />}
+            {deleteSongModalLoad && <DeleteSongModal songData={deleteSongData} visibility={deleteSongShow} handleClose={handleDeleteSongClose} onSuccess={mutate} />}
             <main>
-                <Stack wrap direction='row' justifyContent='center' spacing="1em" style={{
-                    width: '96vw'
-                }} >
+                <Stack wrap direction='row' justifyContent='center' spacing="1em" >
                     <IconButton appearance="primary" color="green" icon={<Plus />}
                         onClick={() => {
                             setAddSongModalLoad(true)
@@ -177,18 +172,18 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                         <InputGroup.Addon>
                             <Search />
                         </InputGroup.Addon>
-                        <Input value={searchText} onChange={(text)=>{
+                        <Input value={searchText} onChange={(text) => {
                             setSearchText(text);
                             setPageIndex(1);
                             router.replace({
                                 pathname: router.pathname,
                                 query: {
-                                  ...router.query,
-                                  searchText: text,
-                                  pageIndex: 1
+                                    ...router.query,
+                                    searchText: text,
+                                    pageIndex: 1
                                 },
                             });
-                            }} placeholder="Search song"
+                        }} placeholder="Search song"
                         />
                         <InputGroup.Button appearance='ghost' onClick={() => {
                             setSearchText('');
@@ -196,9 +191,9 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                             router.replace({
                                 pathname: router.pathname,
                                 query: {
-                                  ...router.query,
-                                  searchText: '',
-                                  pageIndex: 1
+                                    ...router.query,
+                                    searchText: '',
+                                    pageIndex: 1
                                 },
                             });
                         }}>
@@ -206,11 +201,11 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                         </InputGroup.Button>
                     </InputGroup>
                 </Stack>
-                
+
                 <Table
                     wordWrap
                     bordered
-                    style={{marginTop: '2em'}}
+                    style={{ marginTop: '2em' }}
                     autoHeight
                     //height={500}
                     data={processed_data}
@@ -225,7 +220,7 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                     // }}
                     renderRow={(children, row_data) => {
                         return (
-                                row_data ?
+                            row_data ?
                                 <Link passHref href={`/view_song/${(row_data as SongProps).id}`} >
                                     <a>
                                         {children}
@@ -258,18 +253,18 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                             {(rowData: SongProps) => {
                                 return (
                                     <>
-                                    <Whisper placement="auto" trigger="click" speaker={renderRowMenu(rowData, handleRowMenuSelect)}>
-                                        <IconButton onClick={(e) => e.preventDefault()} appearance="ghost" icon={<More />} />
-                                    </Whisper>
+                                        <Whisper placement="auto" trigger="click" speaker={renderRowMenu(rowData, handleRowMenuSelect)}>
+                                            <IconButton onClick={(e) => e.preventDefault()} appearance="ghost" icon={<More />} />
+                                        </Whisper>
                                     </>
                                 );
                             }}
                         </Table.Cell>
                     </Table.Column>
                 </Table>
-                { data &&
+                {data &&
                     <Animation.Bounce in >
-                        <Pagination style={{padding: '0.5em', border: '5px double rgba(47,116,169,0.5)', borderRadius: '0.5em', placeContent: 'center'}}                            
+                        <Pagination style={{ padding: '0.5em', border: '5px double rgba(47,116,169,0.5)', borderRadius: '0.5em', placeContent: 'center' }}
                             prev next size="lg"
                             total={totalPages * maxItemsPerPage} limit={maxItemsPerPage} activePage={pageIndex}
                             onChangePage={(newIndex: number) => {
@@ -284,7 +279,7 @@ const AllSongsPage: NextPage<AllSongsProps> = ({initialSearchText, initialSortCo
                             }} />
                     </Animation.Bounce>
                 }
-                <Divider style={{height: '0.2em', width: '90vw'}} />
+                <Divider style={{ height: '0.2em', width: '90vw' }} />
             </main>
         </>
     )
@@ -297,11 +292,11 @@ AllSongsPage.getInitialProps = async (ctx) => {
     const sortColumn = ctx.query.sortColumn as string;
     const sortType = ctx.query.sortType as SortType;
     const pageIndex = parseInt(ctx.query.pageIndex as string);
-  
+
     return {
-      initialSearchText: searchText ? searchText : '',
-      initialSortColumn: sortColumn ? sortColumn : 'updatedAt',
-      initialSortType: sortType ? sortType : 'desc',
-      initialPageIndex: isNaN(pageIndex) ? 1 : pageIndex,
+        initialSearchText: searchText ? searchText : '',
+        initialSortColumn: sortColumn ? sortColumn : 'updatedAt',
+        initialSortType: sortType ? sortType : 'desc',
+        initialPageIndex: isNaN(pageIndex) ? 1 : pageIndex,
     }
 }

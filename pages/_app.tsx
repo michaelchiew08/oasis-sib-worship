@@ -4,13 +4,14 @@ import 'quill/dist/quill.bubble.css';
 import '../styles/global.css';
 import { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
-import { Container } from 'rsuite'
+import { Container, CustomProvider } from 'rsuite'
 import NextNProgress from 'nextjs-progressbar'
 import { LazyMotion, AnimatePresence, domAnimation, m } from "framer-motion"
 import { fadeOnly } from '../lib/animations'
 import { resolvePageRoute } from '../lib/utils'
 import Head from '../components/Head'
 import Footer from '../components/Footer'
+import { useState, useEffect } from 'react';
 
 const animation = fadeOnly;
 
@@ -18,6 +19,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const router = useRouter();
   const title = resolvePageRoute(router.pathname);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    window.localStorage.setItem('theme', newTheme);
+  };
 
   // const [pageLoading, setPageLoading] = useState<boolean>(false);
   // useEffect(() => {
@@ -31,10 +46,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 
   return (
-    <>
+    <CustomProvider theme={theme}>
       <NextNProgress />
       <Container className='page' >
-        <Head title={title} description={title} />
+        <Head title={title} description={title} theme={theme} toggleTheme={toggleTheme} />
         <LazyMotion features={domAnimation}>
           <AnimatePresence exitBeforeEnter>
             <m.div
@@ -42,10 +57,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               style={{
                 display: "flex",
                 position: "relative",
-                justifyContent: 'center',
                 alignItems: 'center',
+                justifyContent: 'center',
                 height: "100%",
-                width: "96vw"
               }}
               initial="initial"
               animate="animate"
@@ -59,7 +73,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </LazyMotion>
         <Footer />
       </Container>
-    </>
+    </CustomProvider>
   )
 }
 export default MyApp

@@ -2,17 +2,19 @@
 // @ts-ignore
 import React from 'react'
 import Image from 'next/image'
-import { Avatar, Stack, Nav } from 'rsuite'
+import { Avatar, Stack, Nav, Toggle } from 'rsuite'
 import { NavItemProps } from 'rsuite'
 import Link from 'next/link'
 import NextHead from 'next/head'
 import hoverStyles from '../styles/hover.module.css'
 import { PageName } from '../lib/types'
-import { domainUrl } from '../lib/utils'
+import { BsMoon, BsSun } from 'react-icons/bs'
 
 interface HeadProps {
   title?: PageName,
-  description?: string
+  description?: string,
+  theme?: 'light' | 'dark',
+  toggleTheme?: () => void
 }
 
 // eslint-disable-next-line react/display-name
@@ -26,47 +28,55 @@ const NavLink = React.forwardRef((props: NavItemProps, ref: React.LegacyRef<HTML
 });
 
 const Head = (props: HeadProps) => {
-    return (
-      <>
-        <NextHead>
-          <title>Home Worship - {props.title}</title>
-          <meta name={props.title} content={props.description} />
-          <link rel="icon" href="/favicon.ico" />
-        </NextHead>
-        <Stack direction='row' alignItems='center' spacing='1em' style={{
-            marginBottom: '0em'
-          }} >
-          <Avatar
-              className={hoverStyles.hover_glow}
-              style={{
-                cursor: 'pointer',
-                margin: "1em",
-                backgroundColor: "#fff"
-              }}
-              onClick={() => {
-                // Go to home page
-                window.location.href = '/'
-            }}
-          >
-            <Image alt="home_icon" src="/images/home_logo_128px.png" layout='fill' />
-          </Avatar>
-          <Nav activeKey={props.title} appearance='tabs'
-            style={{
-              marginBottom: '1em',
-              width: '60vw',
-              display: "flex",
-              flexWrap: "wrap",
-            }}
-          >
-            <Nav.Item as={NavLink} href="/" eventKey={PageName.Home} >Home</Nav.Item>
-            <Nav.Item as={NavLink} href="/all_songs" eventKey={PageName.AllSongs}  >All Songs</Nav.Item>
-            <Nav.Item as={NavLink} href="/stats" eventKey={PageName.Stats} >Stats</Nav.Item>
-            <Nav.Item as={NavLink} href="/about" eventKey={PageName.About} >About</Nav.Item>
-          </Nav>
-        </Stack>
+  return (
+    <>
+      <NextHead>
+        <title>Home Worship - {props.title}</title>
+        <meta name={props.title} content={props.description} />
+        <link rel="icon" href="/favicon.ico" />
+      </NextHead>
+      <Stack direction='row' alignItems='center' spacing='1em' style={{
+        marginBottom: '0em',
+        justifyContent: 'center',
+      }} >
+        <Avatar
+          className={hoverStyles.hover_glow}
+          style={{
+            cursor: 'pointer',
+            margin: "1em",
+            backgroundColor: "#fff"
+          }}
+          onClick={() => {
+            // Go to home page
+            window.location.href = '/'
+          }}
+        >
+          <Image alt="home_icon" src="/images/home_logo_128px.png" layout='fill' />
+        </Avatar>
+        <Nav activeKey={props.title} appearance='tabs'
+          style={{
+            marginBottom: '1em',
+            width: '50vw',
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          <Nav.Item as={NavLink} href="/" eventKey={PageName.Home} >Home</Nav.Item>
+          <Nav.Item as={NavLink} href="/all_songs" eventKey={PageName.AllSongs}  >All Songs</Nav.Item>
+          <Nav.Item as={NavLink} href="/stats" eventKey={PageName.Stats} >Stats</Nav.Item>
+          <Nav.Item as={NavLink} href="/about" eventKey={PageName.About} >About</Nav.Item>
+        </Nav>
 
-      </>
-    )
+        <Toggle
+          checked={props.theme === 'dark'}
+          onChange={props.toggleTheme}
+          checkedChildren={<BsMoon style={{ marginTop: '5px' }} />}
+          unCheckedChildren={<BsSun style={{ marginTop: '5px' }} />}
+        />
+      </Stack>
+
+    </>
+  )
 }
 
 export default Head;
