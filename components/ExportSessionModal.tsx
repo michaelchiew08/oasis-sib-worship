@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import parse from 'html-react-parser';
 import slugify from 'slugify'
-import { jsPDF } from "jspdf"
-let jspdfInstance = new jsPDF();
 import FileSaver from 'file-saver'
 import useSWR from 'swr'
 import { Modal, Stack, Button, IconButton, Dropdown, Animation } from 'rsuite'
@@ -56,8 +54,6 @@ const songs_fetcher = json_fetcher('GET');
 
 const ExportSessionModal = (props: ExportSessionModalProps) => {
 
-    useEffect(() => { import("jspdf/dist/polyfills.es") }, []);
-
     const lyricsDivRef = useRef<HTMLDivElement>(null);
     const { data, isValidating, error } = useSWR(props.visibility ? `/api/get_song/${props.sessionData?.songs}?multiple` : null, songs_fetcher);
 
@@ -76,7 +72,7 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
             props.onSuccess();
         }
         setExportLoading(false);
-        SuccessMessage("Exported song")
+        SuccessMessage("Exported session")
         props.handleClose();
     }
 
@@ -86,34 +82,15 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
     }
 
     const exportSession = () => {
-        const file_name = slugify(`${new Date(props.sessionData?.date as unknown as string).toDateString()} - ${props.sessionData?.worship_leader}`, '_');
+        const file_name = slugify(
+            `${new Date(props.sessionData?.date as unknown as string).toDateString()} - ${props.sessionData?.worship_leader}`,
+            '_'
+        );
         const file_extension = getFileExtension(exportType);
         setExportLoading(true);
-        if (exportType == 'pdf') {
-            if (lyricsDivRef.current) {
-                jspdfInstance.html(lyricsDivRef.current, {
-                    callback: function (doc: jsPDF) {
-                        const blob = doc.output('blob');
-                        FileSaver.saveAs(blob, `${file_name}.pdf`);
-                        jspdfInstance = new jsPDF();
-                        onSuccess();
-                    },
-                    filename: `${file_name}.pdf`,
-                    autoPaging: 'text',
-                    margin: 10,
-                    x: 0,
-                    y: 0,
-                    html2canvas: {
-                        scale: 0.3
-                    }
-                });
-            }
-            else {
-                onFailure();
-            }
-        }
-        else if (exportType == 'html') {
-            const blob = new Blob([mergedLyrics + htmlExportStyles], {type: "text/plain;charset=utf-8"});
+
+        if (exportType == 'html') {
+            const blob = new Blob([mergedLyrics + htmlExportStyles], { type: "text/plain;charset=utf-8" });
             FileSaver.saveAs(blob, `${file_name}.${file_extension}`);
             onSuccess();
         }
@@ -150,8 +127,8 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
 
     return (
         <Modal overflow={false} open={props.visibility} onClose={props.handleClose}>
-            { data &&
-                <div style={{ display: 'none'}} >
+            {data &&
+                <div style={{ display: 'none' }} >
                     <div ref={lyricsDivRef} style={{
                         width: '21cm', height: '29.7cm',
                         fontFamily: 'serif',
@@ -188,8 +165,8 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
                                 })
                             }
                         </Dropdown>
-                        {!noSongs && 
-                            <Animation.Slide in={exportType=='ppt'} placement='left' >
+                        {!noSongs &&
+                            <Animation.Slide in={exportType == 'ppt'} placement='left' >
                                 <IconButton appearance={showPPTSettings ? 'primary' : undefined} icon={<AiFillSetting />}
                                     onClick={() => {
                                         setShowPPTSettings(!showPPTSettings)
@@ -197,8 +174,8 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
                                 />
                             </Animation.Slide>
                         }
-                        {exportType=='ppt' && showPPTSettings && 
-                            <Animation.Slide in={exportType=='ppt' && showPPTSettings} placement='left' >
+                        {exportType == 'ppt' && showPPTSettings &&
+                            <Animation.Slide in={exportType == 'ppt' && showPPTSettings} placement='left' >
                                 <Button
                                     appearance='primary' color='orange'
                                     onClick={() => {
@@ -210,7 +187,7 @@ const ExportSessionModal = (props: ExportSessionModalProps) => {
                             </Animation.Slide>
                         }
                     </Stack>
-                    <ExportPPTSettings show={exportType=='ppt' && showPPTSettings} settings={pptSettings} setSettings={setPPTSettings} />
+                    <ExportPPTSettings show={exportType == 'ppt' && showPPTSettings} settings={pptSettings} setSettings={setPPTSettings} />
                     {noSongs &&
                         <h4>No songs to export 💤</h4>
                     }

@@ -1,66 +1,65 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { UNAUTHORISED_ERROR_CODE } from './status_codes'
 import prisma from './prisma'
-import HTMLtoDOCX from 'html-to-docx'
+import HtmlToDocx from '@turbodocx/html-to-docx'
 import type { NextApiResponse } from 'next'
 
-//import htmlPDF from 'html-pdf'
-//import os from "os"
-//import path from "path"
-// import { execSync } from 'child_process'
-// import fs from "fs"
-//const tempDir = os.tmpdir();
+export async function convertHTMLToPDF(htmlString: string): Promise<Buffer> {
+    try {
+        const formData = new FormData();
 
-// export async function convertHTMLToPDF(htmlString: string) {
-//     const body = {
-//         htmlCode: htmlString
-//     }
-//     //const data = (await axios.post(`${process.env.AZURE_API_DOMAIN}/htmlToPDFHTTPTrigger?code=${process.env.AZURE_HTML_TO_PDF_API_KEY}`, body)).data;
-//     const data = (await axios.post(`https://api.sejda.com/v2/html-pdf`,
-//         body, {
-//             headers: {
-//                 'Authorization': `Token: ${process.env.SEDJA_PDF_API_KEY}`
-//             },
-//         })).data;
-//     console.log(data)
-//     const fileBuffer: Buffer = Buffer.from(data);
-//     fs.writeFileSync('C:/Users/ACER NITRO5/Desktop/oasis-sib-worship/out2.pdf', fileBuffer);
-//     return fileBuffer
-// }
+        const fullHTML = `<!DOCTYPE html>
+            <html>
+                <head>
+                <meta charset="UTF-8" />
+                </head>
+                <body>
+                ${htmlString}
+                </body>
+            </html>`;
 
-// export async function convertHTMLToPDF(htmlString: string) {
-    //const outputFilePath = path.join(tempDir, 'output.pdf');
-    // if (process.platform === "win32") {
-    //     const executablePath = path.join(process.cwd(), 'wkhtmltopdf', 'wkhtmltopdf.exe');
-    //     const processOutput = execSync(`"${executablePath}" -d 300 - ${outputFilePath}`, { input: htmlString });
-    // }
-    // else if (process.platform === "linux") {
-    //     // INSTALL COMMAND: npm install && yum install ./wkhtmltopdf/wkhtmltox.rpm -y
-    //     console.log(process.env)
-    //     //const processOutput = execSync(`/opt/bin/wkhtmltopdf -d 300 - ${outputFilePath}`, { input: htmlString });
-    //     const executablePath = path.join(process.cwd(), 'wkhtmltopdf', 'Linux', 'bin', 'wkhtmltopdf');
-    //     const processOutput = execSync(`"${executablePath}" -d 300 - ${outputFilePath}`, {
-    //         cwd: path.join(process.cwd(), 'wkhtmltopdf', 'Linux', 'bin'),
-    //         input: htmlString
-    //     });
-    // }
-    // else {
-    //     throw `${process.platform} is not a supported platform.`;
-    // }
-    //const fileBuffer: Buffer = fs.readFileSync(outputFilePath);
-    
-    // html-pdf library (Phantomjs)
-    // const fileBuffer: Buffer = await new Promise(function(resolve,reject){
-    //     htmlPDF.create(htmlString).toBuffer(function(err: any, buffer: Buffer){
-    //         console.log(err);
-    //         resolve(buffer);
-    //     });
-    //  });
-    //return fileBuffer
-// }
+        const htmlBlob = new Blob([fullHTML], {
+            type: 'text/html; charset=utf-8',
+        });
+
+        formData.append(
+            'fileInput',
+            htmlBlob,
+            `document-${Date.now()}.html`
+        );
+
+        formData.append('zoom', '1.0');
+
+        const response = await fetch(
+            `${process.env.STIRLING_PDF_API_URL ?? 'http://localhost:3001/api/v1/convert/html/pdf'}`,
+            {
+                method: 'POST',
+                headers: {
+                    'X-API-Key': process.env.STIRLING_PDF_API_KEY ?? '',
+                    Accept: 'application/pdf',
+                },
+                body: formData,
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `StirlingPDF API Error: ${response.status} - ${errorText}`
+            );
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return Buffer.from(arrayBuffer);
+
+    } catch (error) {
+        console.error('HTML to PDF conversion failed:', error);
+        throw error;
+    }
+}
 
 export async function convertHTMLToWord(htmlString: string) {
-    const fileBuffer: Buffer = await HTMLtoDOCX(htmlString, null, {
+    const fileBuffer: Buffer = await HtmlToDocx(htmlString, null, {
         table: { row: { cantSplit: true } },
         //footer: true,
         //pageNumber: true,
@@ -68,7 +67,7 @@ export async function convertHTMLToWord(htmlString: string) {
     return fileBuffer
 }
 
-export async function verifyPassword (password: string, res: NextApiResponse) {
+export async function verifyPassword(password: string, res: NextApiResponse) {
     if (password != process.env.ADMIN_PASSWORD) {
         res.status(UNAUTHORISED_ERROR_CODE).json({ message: 'Incorrect password!' });
         return false
