@@ -1,11 +1,10 @@
 import { PrismaClient } from '@prisma/client'
 
-declare global {
-    // eslint-disable-next-line no-var
-    var prisma: PrismaClient
+const global = globalThis as unknown as {
+    prisma: PrismaClient | undefined
 }
 
-const prisma = global.prisma || new PrismaClient();
+const prisma = global.prisma ?? new PrismaClient()
 if (process.env.NODE_ENV === "development"){
     global.prisma = prisma;
 }
