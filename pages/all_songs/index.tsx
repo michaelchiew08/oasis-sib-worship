@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import { IconButton, Input, InputGroup, Stack, Divider, Table, Whisper, Popover, Dropdown, Pagination, Animation } from 'rsuite';
+import { IconButton, Input, InputGroup, Stack, Loader, Divider, Table, Whisper, Popover, Dropdown, Pagination, Animation } from 'rsuite';
 import ModalLoader from '../../components/ModalLoader'
 const SongModal = dynamic(() => import('../../components/SongModal'), {
     loading: () => <ModalLoader message="Loading song editor" />
@@ -200,6 +200,10 @@ const AllSongsPage: NextPage<AllSongsProps> = ({ initialSearchText, initialSortC
                             <GrClose />
                         </InputGroup.Button>
                     </InputGroup>
+
+                    <Animation.Bounce in={isValidating} unmountOnExit={!isValidating}>
+                        <Loader size='md' content="Fetching songs..." />
+                    </Animation.Bounce>
                 </Stack>
 
                 <Table

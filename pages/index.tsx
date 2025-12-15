@@ -175,7 +175,7 @@ const HomePage: NextPage<HomePageProps> = ({ initialSearchText, initialStartDate
         <Stack spacing='1em' direction='column' alignItems='center' justifyContent='center' style={{
           width: '100vw'
         }} >
-          <Animation.Bounce in={isValidating} >
+          <Animation.Bounce in={isValidating} unmountOnExit={!isValidating}>
             <Loader size='md' content="Fetching sessions..." />
           </Animation.Bounce>
           <Stack direction='column' spacing="1em" alignItems='center' justifyContent='center' >
@@ -270,7 +270,7 @@ const HomePage: NextPage<HomePageProps> = ({ initialSearchText, initialStartDate
                 </Stack>
               </AnimateHeight>
             </Animation.Bounce>
-            <Divider style={{ height: '0.2em', width: '50vw' }} />
+            <Divider style={{ height: '0.2em', width: '90vw' }} />
             <h2>Previous sessions</h2>
             <Animation.Bounce in={processed_data != undefined} >
               <AnimateHeight
