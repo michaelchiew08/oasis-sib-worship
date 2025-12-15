@@ -31,7 +31,7 @@ export async function convertHTMLToPDF(htmlString: string): Promise<Buffer> {
         formData.append('zoom', '1.0');
 
         const response = await fetch(
-            `${process.env.STIRLING_PDF_URL ?? 'http://localhost:3001/api/v1/convert/html/pdf'}`,
+            `${process.env.STIRLING_PDF_URL ?? 'http://localhost:9090/api/v1/convert/html/pdf'}`,
             {
                 method: 'POST',
                 headers: {
