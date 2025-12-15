@@ -3,10 +3,6 @@ import { Button, Stack, Divider } from 'rsuite';
 import { BsGithub, BsYoutube, BsFacebook } from 'react-icons/bs'
 import hoverStyles from '../../styles/hover.module.css'
 
-const GitHubUrl = "https://github.com/FongYoong/oasis-sib-worship";
-const YouTubeUrl = "https://www.youtube.com/channel/UCQMt50RI68HvV36hxqVLFgQ";
-const FacebookUrl = "https://www.facebook.com/theoasissibs2/";
-
 const AboutPage: NextPage = () => {
 
   return (
@@ -28,42 +24,6 @@ const AboutPage: NextPage = () => {
             For security purposes, a password 🔑 is required for edit/delete to prevent unwanted behaviour.
           </p>
           <Divider style={{height: '0.2em', width: '90vw'}} />
-          <h2 style={{textAlign:'center'}} >I would like to report an issue. 🐛</h2>
-          <p style={{fontSize: '1.5em'}}>
-            If you face any issues with the website, feel free to contact <b>Chien Yoong</b> by WhatsApp or <a className='actualAnchor' href="mailto:fongyoong8@gmail.com">email</a>.
-          </p>
-          <Divider style={{height: '0.2em', width: '90vw'}} />
-          <Stack wrap direction='row' justifyContent='center' spacing="1em" >
-            <a href={GitHubUrl}>
-              <Button className={hoverStyles.hover_grow} appearance="primary" style={{
-                  backgroundColor: "black"
-                }}
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.open(GitHubUrl, '_blank')
-                }} >
-                  <BsGithub style={{marginRight: '1em'}} />GitHub
-              </Button>
-            </a>
-            <a href={YouTubeUrl}>
-              <Button className={hoverStyles.hover_grow} appearance="primary" color="red"
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.open(YouTubeUrl, '_blank')
-                }} >
-                  <BsYoutube style={{marginRight: '1em'}} />YouTube
-              </Button>
-            </a>
-            <a href={FacebookUrl}>
-              <Button className={hoverStyles.hover_grow} appearance="primary" color="blue"
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.open(FacebookUrl, '_blank')
-                }} >
-                  <BsFacebook style={{marginRight: '1em'}} />Facebook
-              </Button>
-            </a>
-          </Stack>
         </Stack>
       </main>
     </>

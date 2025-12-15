@@ -29,31 +29,26 @@ const Head = (props: HeadProps) => {
     return (
       <>
         <NextHead>
-          <title>Oasis SIB Worship - {props.title}</title>
+          <title>Home Worship - {props.title}</title>
           <meta name={props.title} content={props.description} />
           <link rel="icon" href="/favicon.ico" />
         </NextHead>
         <Stack direction='row' alignItems='center' spacing='1em' style={{
             marginBottom: '0em'
           }} >
-            {/* src={`https://${domainUrl}/images/oasis_sib_logo.jpg`}  */}
           <Avatar
               className={hoverStyles.hover_glow}
               style={{
                 cursor: 'pointer',
                 margin: "1em",
-                outlineStyle: 'solid',
-                outlineWidth: '1px',
-                outlineColor: "#9e9e9e"
+                backgroundColor: "#fff"
               }}
               onClick={() => {
-                // const w = window.open('https://www.facebook.com/theoasissibs2/', '_blank');
-                // if(w) {
-                //   w.focus()
-                // }
+                // Go to home page
+                window.location.href = '/'
             }}
           >
-            <Image alt="oasis_sib_logo" src="/images/oasis_sib_logo_128px.jpg" layout='fill' />
+            <Image alt="home_icon" src="/images/home_logo_128px.png" layout='fill' />
           </Avatar>
           <Nav activeKey={props.title} appearance='tabs'
             style={{

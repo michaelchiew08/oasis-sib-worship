@@ -3,7 +3,6 @@ import { CopyClipboardMessage } from './messages';
 import { SessionProps, SongProps, PageName } from './types';
 import { allErrorCodes } from './status_codes';
 
-//export const domainUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : 'localhost:3000';
 export const domainUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? "oasis-sib-worship.vercel.app" : 'localhost:3000';
 
 export const resolvePageRoute = (path: string) => {
