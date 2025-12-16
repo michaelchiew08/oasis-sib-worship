@@ -69,7 +69,7 @@ const Head = (props: HeadProps) => {
                 window.location.href = '/'
               }}
             >
-              <Image alt="home_icon" src="/images/home_logo_128px.png" layout='fill' />
+              <Image alt="home_icon" src="/images/home_logo_128px.png" layout='fill' unoptimized />
             </Avatar>
           </Stack>
         </Navbar.Brand>
