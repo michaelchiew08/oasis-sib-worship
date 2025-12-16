@@ -8,7 +8,8 @@
     "build": "prisma generate && next build",
     "build:netlify": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npm rebuild --platform=linux --arch=x64 sharp"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",

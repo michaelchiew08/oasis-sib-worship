@@ -4,4 +4,9 @@
 
 module.exports = {
   reactStrictMode: true,
+
+  // Disable image optimization entirely
+  images: {
+    unoptimized: true
+  }
 }
